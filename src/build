@@ -1,0 +1,14 @@
+#!/bin/bash -ex
+
+git clone -b "${VITESS_COMMIT}" https://github.com/vitessio/vitess.git
+cd vitess
+patch -p1 < ../docker-compose.patch
+
+make docker_lite
+cd ..
+docker build -t vitess/lite:withhacks .
+
+cp -vf vitess/examples/compose/template.env .env
+echo 'VITESS_TAG=withhacks' >> .env
+docker-compose -f vitess/examples/compose/docker-compose.beginners.yml up -d
+

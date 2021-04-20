@@ -1,0 +1,72 @@
+diff --git a/examples/compose/docker-compose.beginners.yml b/examples/compose/docker-compose.beginners.yml
+index d779f7b94..abf52a3cc 100644
+--- a/examples/compose/docker-compose.beginners.yml
++++ b/examples/compose/docker-compose.beginners.yml
+@@ -101,8 +101,6 @@ services:
+         -service_map 'grpc-vtgateservice' \
+         -enable_system_settings=true \
+         "]
+-    volumes:
+-      - ".:/script"
+     environment:
+       - KEYSPACE
+       - DB
+@@ -130,8 +128,6 @@ services:
+     - SCHEMA_FILES
+     - POST_LOAD_FILE
+     - EXTERNAL_DB
+-    volumes:
+-    - .:/script
+     depends_on:
+       vttablet101:
+         condition: service_healthy
+@@ -143,7 +139,6 @@ services:
+       - "$GRPC_PORT"
+       - "3306"
+     volumes:
+-      - ".:/script"
+       - "./backups:/vt/vtdataroot/backups"
+     environment:
+       - TOPOLOGY_FLAGS
+@@ -175,7 +170,6 @@ services:
+       - "$GRPC_PORT"
+       - "3306"
+     volumes:
+-      - ".:/script"
+       - "./backups:/vt/vtdataroot/backups"
+     environment:
+       - TOPOLOGY_FLAGS
+@@ -207,7 +201,6 @@ services:
+       - "$GRPC_PORT"
+       - "3306"
+     volumes:
+-      - ".:/script"
+       - "./backups:/vt/vtdataroot/backups"
+     environment:
+       - TOPOLOGY_FLAGS
+@@ -239,7 +232,6 @@ services:
+       - "$GRPC_PORT"
+       - "3306"
+     volumes:
+-      - ".:/script"
+       - "./backups:/vt/vtdataroot/backups"
+     environment:
+       - TOPOLOGY_FLAGS
+@@ -271,8 +263,6 @@ services:
+       - vtctld
+     ports:
+       - "13000:3000"
+-    volumes:
+-      - ".:/script"
+     environment:
+       - TOPOLOGY_FLAGS
+       - WEB_PORT
+@@ -294,8 +284,6 @@ services:
+ 
+   vreplication:
+     image: vitess/lite:${VITESS_TAG:-latest}
+-    volumes:
+-      - ".:/script"
+     environment:
+       - TOPOLOGY_FLAGS
+       - WEB_PORT
