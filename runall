@@ -1,0 +1,9 @@
+#!/bin/bash -ex
+
+docker network create dind || true;
+docker rm -f dind || true;
+docker run -d --privileged --name=dind -e DOCKER_TLS_CERTDIR= docker:dind --storage-driver=overlay2;
+sleep 2;
+
+docker run --rm -e DOCKER_HOST="tcp://$(docker inspect dind | jq -r '.[0].NetworkSettings.IPAddress'):2375" -e VITESS_COMMIT="${1}" vitess-builder
+
