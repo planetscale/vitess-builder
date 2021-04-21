@@ -20,5 +20,7 @@ jobs:
       - id: push
         name: Push image
         if: ${{ github.ref == 'refs/heads/master' }}
-        run: docker push gcr.io/planetscale-vitess-testing/vitess-builder
+        run: |
+          echo '${{ secrets.GCLOUD_SERVICE_KEY }}' | docker login -u _json_key --password-stdin https://gcr.io/
+          docker push gcr.io/planetscale-vitess-testing/vitess-builder
 
