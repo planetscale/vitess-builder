@@ -1,14 +1,34 @@
 #!/bin/bash -ex
+function contains() {
+	echo "--- 1 = '$1'"
+	echo "--- 2 = '$2'"
+	[[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
+}
 
-git clone -b "${VITESS_COMMIT}" https://github.com/vitessio/vitess.git
+declare -A mysql_versions
+mysql_versions[mysql57]=5.7.9-Vitess
+mysql_versions[mysql80]=8.0.23-Vitess
+dialect_names="${!mysql_versions[@]}";
+
+echo "--- MYSQL_DIALECT = '${MYSQL_DIALECT}'"
+if ! contains "${dialect_names}" "${MYSQL_DIALECT}"; then
+	echo "!!! Unknown MYSQL_DIALECT '${MYSQL_DIALECT}'";
+	exit 1;
+fi
+
+git clone -b "${VITESS_COMMIT}" https://github.com/planetscale/vitess.git
 cd vitess
 patch -p1 < ../docker-compose.patch
 
-make docker_lite
+make "docker_lite_${MYSQL_DIALECT}"
 cd ..
-docker build -t vitess/lite:withhacks .
+sed -i "s/:latest/:${MYSQL_DIALECT}/" Dockerfile
+cat Dockerfile
+docker build -t "vitess/lite:${MYSQL_DIALECT}-withhacks" .
 
 cp -vf vitess/examples/compose/template.env .env
-echo 'VITESS_TAG=withhacks' >> .env
+echo "VITESS_TAG=${MYSQL_DIALECT}-withhacks" >> .env
+echo "MYSQL_SERVER_VERSION=${mysql_versions[${MYSQL_DIALECT}]}" >> .env
+cp -vf .env vitess/examples/compose/.env
 docker-compose -f vitess/examples/compose/docker-compose.beginners.yml up -d
 
