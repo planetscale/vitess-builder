@@ -18,7 +18,7 @@ fi
 
 git clone -b "${VITESS_COMMIT}" https://github.com/planetscale/vitess.git
 cd vitess/examples/compose
-go run ./vtcompose
+go run ./vtcompose -keyspaceData "${VT_KEYSPACES}"
 /src/patch-compose docker-compose.yml
 cd ../..
 patch -p1 < ../docker-compose.patch
