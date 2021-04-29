@@ -17,7 +17,10 @@ if ! contains "${dialect_names}" "${MYSQL_DIALECT}"; then
 fi
 
 git clone -b "${VITESS_COMMIT}" https://github.com/planetscale/vitess.git
-cd vitess
+cd vitess/examples/compose
+go run ./vtcompose
+/src/patch-compose docker-compose.yml
+cd ../..
 patch -p1 < ../docker-compose.patch
 
 make "docker_lite_${MYSQL_DIALECT}"
@@ -30,5 +33,5 @@ cp -vf vitess/examples/compose/template.env .env
 echo "VITESS_TAG=${MYSQL_DIALECT}-withhacks" >> .env
 echo "MYSQL_SERVER_VERSION=${mysql_versions[${MYSQL_DIALECT}]}" >> .env
 cp -vf .env vitess/examples/compose/.env
-docker-compose -f vitess/examples/compose/docker-compose.beginners.yml up -d
+docker-compose -f vitess/examples/compose/docker-compose.yml up -d
 
