@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+import argparse
+
+import yaml
+
+cli = argparse.ArgumentParser()
+cli.add_argument('infile', help = 'Input YAML file')
+(args, _) = cli.parse_known_args()
+
+f = open(args.infile, 'r')
+compose = yaml.load(f)
+f.close()
+for (name, service) in compose['services'].items():
+	if(name == 'vtgate'):
+		service['command'][-1] += ' -mysql_server_version $MYSQL_SERVER_VERSION'
+
+	try:
+		volumes = service['volumes']
+	except KeyError:
+		continue
+	for i in range(0, len(volumes)):
+		if(volumes[i] == '.:/script'):
+			del volumes[i]
+			break
+	if(len(volumes) == 0):
+		del service['volumes']
+
+f = open(args.infile, 'w')
+yaml.dump(compose, f)
+f.close()
+
