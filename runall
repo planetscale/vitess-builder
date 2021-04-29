@@ -4,5 +4,5 @@ docker network create dind || true;
 docker run -d --privileged --name=dind -e DOCKER_TLS_CERTDIR= -p 15306:15306 docker:dind --storage-driver=overlay2 || true;
 sleep 2;
 
-docker run --rm -e DOCKER_HOST="tcp://$(docker inspect dind | jq -r '.[0].NetworkSettings.IPAddress'):2375" -e VITESS_COMMIT="${1:-master}" -e MYSQL_DIALECT="${2:-mysql57}" gcr.io/planetscale-vitess-testing/vitess-builder
+docker run --rm -e DOCKER_HOST="tcp://$(docker inspect dind | jq -r '.[0].NetworkSettings.IPAddress'):2375" -e VITESS_COMMIT="${1:-master}" -e MYSQL_DIALECT="${2:-mysql57}" -e VT_KEYSPACES="${3:-test:1:0}" gcr.io/planetscale-vitess-testing/vitess-builder
 
