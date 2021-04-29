@@ -6,6 +6,6 @@ This is a small development/testing helper for Vitess.  It starts a docker-in-do
 tl;dr
 =====
 ```sh
-docker build -t vitess-builder . && ./runall master
+docker build -t gcr.io/planetscale-vitess-testing/vitess-builder . && ./runall master
 ```
 
