@@ -1,4 +1,7 @@
-FROM docker
+FROM docker:dind
+
+ENV DOCKER_TLS_CERTDIR=
+ENV DOCKER_HOST=tcp://localhost:2375
 
 RUN apk add --no-cache git make docker-compose bash patch yq go
 RUN \
