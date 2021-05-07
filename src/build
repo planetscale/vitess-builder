@@ -5,6 +5,8 @@ function contains() {
 	[[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
 }
 
+/usr/local/bin/dockerd-entrypoint.sh --storage-driver=overlay2 &
+
 declare -A mysql_versions
 mysql_versions[mysql57]=5.7.9-Vitess
 mysql_versions[mysql80]=8.0.23-Vitess
@@ -23,6 +25,9 @@ go run ./vtcompose -keyspaceData "${VT_KEYSPACES}"
 cd ../..
 patch -p1 < ../docker-compose.patch
 
+# Docker takes a while to start, and sometimes the `git clone` step goes by quickly.  Make sure it's up and ready to go before we proceed.
+until docker ps; do sleep 1; done
+
 make "docker_lite_${MYSQL_DIALECT}"
 cd ..
 sed -i "s/:latest/:${MYSQL_DIALECT}/" Dockerfile
@@ -33,5 +38,8 @@ cp -vf vitess/examples/compose/template.env .env
 echo "VITESS_TAG=${MYSQL_DIALECT}-withhacks" >> .env
 echo "MYSQL_SERVER_VERSION=${mysql_versions[${MYSQL_DIALECT}]}" >> .env
 cp -vf .env vitess/examples/compose/.env
-docker-compose -f vitess/examples/compose/docker-compose.yml up -d
+# For whatever reason, this fails after ten seconds even with -t 60
+docker-compose -f vitess/examples/compose/docker-compose.yml up || true
+sleep 20
+docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60
 
