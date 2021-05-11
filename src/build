@@ -5,7 +5,9 @@ function contains() {
 	[[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
 }
 
-/usr/local/bin/dockerd-entrypoint.sh --storage-driver=overlay2 &
+if [ "${RUN_DOCKER}" -eq 1 ]; then
+	/usr/local/bin/dockerd-entrypoint.sh --storage-driver=overlay2 &
+fi;
 
 declare -A mysql_versions
 mysql_versions[mysql57]=5.7.9-Vitess
