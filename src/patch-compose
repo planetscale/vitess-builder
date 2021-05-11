@@ -10,6 +10,8 @@ cli.add_argument('infile', help = 'Input YAML file')
 f = open(args.infile, 'r')
 compose = yaml.load(f)
 f.close()
+del compose['services']['external_db_host']
+del compose['services']['vtctld']['depends_on']
 for (name, service) in compose['services'].items():
 	if(name == 'vtgate'):
 		service['command'][-1] += ' -mysql_server_version $MYSQL_SERVER_VERSION'
