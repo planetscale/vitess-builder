@@ -6,7 +6,7 @@ function contains() {
 }
 
 if [ "${RUN_DOCKER}" -eq 1 ]; then
-	/usr/local/bin/dockerd-entrypoint.sh --storage-driver=overlay2 &
+	/usr/local/bin/dockerd-entrypoint.sh --storage-driver=overlay2 &>/dev/null &
 fi;
 
 declare -A mysql_versions
