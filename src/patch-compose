@@ -15,6 +15,9 @@ del compose['services']['vtctld']['depends_on']
 for (name, service) in compose['services'].items():
 	if(name == 'vtgate'):
 		service['command'][-1] += ' -mysql_server_version $MYSQL_SERVER_VERSION'
+	elif(name == 'vttablet101'):
+		service['command'][1] = '-exc'
+		service['command'][2] = 'find /vt/vtdataroot && ' + service['command'][2]
 
 	try:
 		volumes = service['volumes']
