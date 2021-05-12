@@ -28,6 +28,8 @@ go run ./vtcompose -keyspaceData "${VT_KEYSPACES}"
 /src/patch-compose docker-compose.yml
 cd ../..
 patch -p1 < ../docker-compose.patch
+echo '>>> cat examples/compose/docker.compose.yml'
+cat examples/compose/docker-compose.yml
 
 # Docker takes a while to start, and sometimes the `git clone` step goes by quickly.  Make sure it's up and ready to go before we proceed.
 until docker ps; do sleep 1; done
@@ -56,6 +58,7 @@ docker ps -a
 sleep 20
 echo '>>> date'
 date
+docker logs compose_external_db_host
 echo '>>> docker logs compose_vttablet101_1'
 docker logs compose_vttablet101_1
 docker ps -a
