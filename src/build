@@ -56,6 +56,8 @@ docker ps -a
 sleep 20
 echo '>>> date'
 date
+echo '>>> docker logs compose_vttablet101_1'
+docker logs compose_vttablet101_1
 docker ps -a
 echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60"
 docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60
