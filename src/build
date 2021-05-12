@@ -48,11 +48,17 @@ cp -vf .env vitess/examples/compose/.env
 # For whatever reason, this fails after ten seconds even with -t 60
 echo ">>> cat .env"
 cat .env
+echo '>>> date'
+date
 echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up || true"
 docker-compose -f vitess/examples/compose/docker-compose.yml up || true
 docker ps -a
 sleep 20
+echo '>>> date'
+date
 docker ps -a
 echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60"
 docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60
+echo '>>> date'
+date
 
