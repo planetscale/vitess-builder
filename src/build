@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 function contains() {
 	echo "--- 1 = '$1'"
 	echo "--- 2 = '$2'"
@@ -20,8 +20,10 @@ if ! contains "${dialect_names}" "${MYSQL_DIALECT}"; then
 	exit 1;
 fi
 
+echo ">>> git clone -b \"${VITESS_COMMIT}\" https://github.com/planetscale/vitess.git"
 git clone -b "${VITESS_COMMIT}" https://github.com/planetscale/vitess.git
 cd vitess/examples/compose
+echo ">>> go run ./vtcompose -keyspaceData \"${VT_KEYSPACES}\""
 go run ./vtcompose -keyspaceData "${VT_KEYSPACES}"
 /src/patch-compose docker-compose.yml
 cd ../..
@@ -30,10 +32,13 @@ patch -p1 < ../docker-compose.patch
 # Docker takes a while to start, and sometimes the `git clone` step goes by quickly.  Make sure it's up and ready to go before we proceed.
 until docker ps; do sleep 1; done
 
+echo ">>> make \"docker_lite_${MYSQL_DIALECT}\""
 make "docker_lite_${MYSQL_DIALECT}"
 cd ..
 sed -i "s/:latest/:${MYSQL_DIALECT}/" Dockerfile
+echo ">>> cat Dockerfile"
 cat Dockerfile
+echo ">>> docker build -t \"vitess/lite:${MYSQL_DIALECT}-withhacks\" ."
 docker build -t "vitess/lite:${MYSQL_DIALECT}-withhacks" .
 
 cp -vf vitess/examples/compose/template.env .env
@@ -41,9 +46,13 @@ echo "VITESS_TAG=${MYSQL_DIALECT}-withhacks" >> .env
 echo "MYSQL_SERVER_VERSION=${mysql_versions[${MYSQL_DIALECT}]}" >> .env
 cp -vf .env vitess/examples/compose/.env
 # For whatever reason, this fails after ten seconds even with -t 60
+echo ">>> cat .env"
+cat .env
+echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up || true"
 docker-compose -f vitess/examples/compose/docker-compose.yml up || true
 docker ps -a
 sleep 20
 docker ps -a
+echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60"
 docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60
 
