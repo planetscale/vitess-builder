@@ -58,7 +58,6 @@ docker ps -a
 sleep 20
 echo '>>> date'
 date
-docker logs compose_external_db_host
 echo '>>> docker logs compose_vttablet101_1'
 docker logs compose_vttablet101_1
 docker ps -a
