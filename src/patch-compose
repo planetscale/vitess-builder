@@ -18,6 +18,9 @@ for (name, service) in compose['services'].items():
 	elif(name == 'vttablet101'):
 		service['command'][1] = '-exc'
 		service['command'][2] = 'find /vt/vtdataroot && ' + service['command'][2]
+		if('volumes' not in service):
+			service['volumes'] = []
+		service['volumes'].append('/vt/vtdataroot')
 
 	try:
 		volumes = service['volumes']
