@@ -37,6 +37,8 @@ done
 # Docker takes a while to start, and sometimes the `git clone` step goes by quickly.  Make sure it's up and ready to go before we proceed.
 until docker ps; do sleep 1; done
 
+echo ">>> cat docker/lite/Dockerfile.${MYSQL_DIALECT}"
+cat "docker/lite/Dockerfile.${MYSQL_DIALECT}"
 echo ">>> make \"docker_lite_${MYSQL_DIALECT}\""
 make "docker_lite_${MYSQL_DIALECT}"
 cd ..
