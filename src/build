@@ -65,8 +65,10 @@ docker logs compose_vttablet101_1 2>&1
 docker ps -a
 echo ">>> docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60"
 docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60
-echo ">>> docker rm; docker-compose up"
-docker rm -f compose_vttablet101_1; docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60 || true
+echo ">>> docker-compose down"
+docker-compose -f vitess/examples/compose/docker-compose.yml down -v
+echo '>>> docker-compose up'
+docker-compose -f vitess/examples/compose/docker-compose.yml up -t 60 || true
 echo '>>> date'
 date
 echo ">>> docker ps -a"
