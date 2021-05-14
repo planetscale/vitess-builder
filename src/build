@@ -30,6 +30,9 @@ cd ../..
 patch -p1 < ../docker-compose.patch
 echo '>>> cat examples/compose/docker.compose.yml'
 cat examples/compose/docker-compose.yml
+for file in docker/lite/Dockerfile.*; do
+	sed -i '/^VOLUME \/vt\/vtdataroot$/d' "${file}" || true
+done
 
 # Docker takes a while to start, and sometimes the `git clone` step goes by quickly.  Make sure it's up and ready to go before we proceed.
 until docker ps; do sleep 1; done
