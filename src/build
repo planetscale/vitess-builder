@@ -5,6 +5,8 @@ function contains() {
 	[[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
 }
 
+cd "$(dirname "${0}")"
+
 if [ "${RUN_DOCKER}" -eq 1 ]; then
 	/usr/local/bin/dockerd-entrypoint.sh &>/dev/null &
 fi;
