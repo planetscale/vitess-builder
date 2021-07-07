@@ -11,7 +11,6 @@ RUN \
 	apk del .build-deps
 
 ADD src /src
-WORKDIR /src
 
-ENTRYPOINT ["./build"]
+ENTRYPOINT ["/src/build"]
 
